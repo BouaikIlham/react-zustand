@@ -1,28 +1,34 @@
-import create from 'zustand'
+import create from "zustand";
+// import { persist, devtools } from "zustand/middleware";
 
-const useStore = create((set) => ({
-   count: 0,
-   products: [],
-   cart: [],
-   incrementCount: () => {
-    set((state) => ({count: state.count + 1}))
-   },
-    decrementCount: () => {
-        set((state) => ({ count: state.count - 1 }))
-    },
-    fetchProducts: async () => {
-        const res = await fetch('https://fakestoreapi.com/products')
-            .then(res => res.json())
-            .then(res => res )
+let store = (set) => ({
+  products: [],
+  cart: [],
 
-        set({ products: res })
+  fetchProducts: async () => {
+    const res = await fetch("https://fakestoreapi.com/products")
+      .then((res) => res.json())
+      .then((res) => res);
 
-    },
-    addToCart: (product) => {
-        set((state) =>({cart: [...state.cart, product]}))
-        const {cart} = useStore.getState()
-        
-    }
-}))
+    set({ products: res });
+  },
+  addToCart: (product) => {
+    const { cart } = useStore.getState();
+    const isFound = cart.some((p) => {
+      if (p.id === product.id) {
+        return true;
+      }
+      return false;
+    });
+    if (isFound) return alert("already in cart");
+
+    set((state) => ({ cart: [...state.cart, { ...product, number: 1 }] }));
+  },
+});
+
+// store = persist(store); // for persisting the state
+// store = devtools(store); // using reduct extention in chrome
+
+const useStore = create(store);
 
 export default useStore;
