@@ -24,6 +24,14 @@ let store = (set) => ({
 
     set((state) => ({ cart: [...state.cart, { ...product, number: 1 }] }));
   },
+  clearCart: () => {
+    set({ cart: []})
+  },
+  removeProduct: (product) => {
+    const { cart } = useStore.getState();
+    const newCart = cart.filter((p) => p.id !== product.id)
+    set({cart: newCart})
+  }
 });
 
 // store = persist(store); // for persisting the state
