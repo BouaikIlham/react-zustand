@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Products from "./components/Products";
 import Checkout from "./components/Checkout";
 import { Route, Routes } from 'react-router-dom';
+import Navbar from "./components/Navbar";
 
 
 function App() {
@@ -15,9 +16,10 @@ function App() {
 
   return (
     <div>
+      <Navbar />
       <Routes>
         <Route path="/" element={<Products products={store.products} />} />
-        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/checkout" element={<Checkout product={store.cart} />} />
       </Routes>
     </div>
   );
