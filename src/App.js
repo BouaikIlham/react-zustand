@@ -19,7 +19,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Products products={store.products} />} />
-        <Route path="/checkout" element={<Checkout product={store.cart} />} />
+        <Route path="/checkout" element={<Checkout product={store.cart} removeProduct={store.removeProduct} updateCartTotal={store.updateCartTotal} cartTotal={store.cartTotal} incrementProductNumber={store.incrementProductNumber} decrementProductNumber={store.decrementProductNumber} />} />
       </Routes>
     </div>
   );

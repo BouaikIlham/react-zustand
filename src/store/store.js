@@ -4,6 +4,7 @@ import create from "zustand";
 let store = (set) => ({
   products: [],
   cart: [],
+  cartTotal: 0,
   fetchProducts: async () => {
     const res = await fetch("https://fakestoreapi.com/products")
       .then((res) => res.json())
@@ -30,6 +31,33 @@ let store = (set) => ({
     const { cart } = useStore.getState();
     const newCart = cart.filter((p) => p.id !== product.id)
     set({cart: newCart})
+  },
+  updateCartTotal: () => {
+    const { cart } = useStore.getState();
+    const sum = cart.reduce((a, b) => a + b.price, 0);
+    set({ cartTotal: sum })
+  
+  },
+  incrementProductNumber: (product) => {
+    const { cart } = useStore.getState();
+    const number = product.number + 1
+    const newProduct = {...product, number: number}
+    const productIndex = cart.findIndex((p) => p.id === product.id)
+    cart[productIndex] = newProduct
+    let sum = cart.reduce((a, b) => a + (b.price * b.number), 0);
+    sum = sum.toFixed(2)
+    set({ cartTotal: sum, cart: cart })
+  },
+  decrementProductNumber: (product) => {
+    const { cart } = useStore.getState();
+    const number = product.number - 1
+    if (number > 0) {
+      const newProduct = { ...product, number: number }
+      const productIndex = cart.findIndex((p) => p.id === product.id)
+      cart[productIndex] = newProduct
+      let sum = cart.reduce((a, b) => a + (b.price * b.number), 0);
+      set({ cartTotal: sum, cart: cart })
+    }
   }
 });
 
