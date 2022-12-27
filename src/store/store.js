@@ -7,6 +7,7 @@ const calculateCartTotal = (cart) => {
 };
 
 let store = (set) => ({
+  isLoading: true,
   products: [],
   cart: [],
   cartTotal: 0,
@@ -15,7 +16,7 @@ let store = (set) => ({
       .then((res) => res.json())
       .then((res) => res);
 
-    set({ products: res });
+    set({ products: res, isLoading: false });
   },
   addToCart: (product) => {
     const { cart } = useStore.getState();
@@ -62,7 +63,7 @@ let store = (set) => ({
   },
 });
 
-store = persist(store); // for persisting the state
+// store = persist(store); // for persisting the state
 store = devtools(store); // using reduct extention in chrome
 
 const useStore = create(store);

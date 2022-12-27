@@ -17,7 +17,12 @@ function App() {
     <div>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Products products={store.products} />} />
+        <Route
+          path="/"
+          element={
+            <Products products={store.products} isLoading={store.isLoading} />
+          }
+        />
         <Route
           path="/checkout"
           element={
