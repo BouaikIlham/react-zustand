@@ -1,7 +1,8 @@
 import create from "zustand";
-import { persist, devtools } from "zustand/middleware";
+// import { persist, devtools } from "zustand/middleware";
 
 let store = (set) => ({
+  isLoading: true,
   products: [],
   cart: [],
   cartTotal: 0,
@@ -10,7 +11,7 @@ let store = (set) => ({
       .then((res) => res.json())
       .then((res) => res);
 
-    set({ products: res });
+    set({ products: res, isLoading: false });
   },
   addToCart: (product) => {
     const { cart } = useStore.getState();
@@ -25,41 +26,36 @@ let store = (set) => ({
     set((state) => ({ cart: [...state.cart, { ...product, number: 1 }] }));
   },
   clearCart: () => {
-    set({ cart: []})
+    set({ cart: [] });
   },
   removeProduct: (product) => {
     const { cart } = useStore.getState();
     const newCart = cart.filter((p) => p.id !== product.id)
-    let sum = newCart.reduce((a, b) => a + (b.price * b.number), 0);
-    sum = sum.toFixed(2)
-    set({cart: newCart, cartTotal: sum})
+    set({cart: newCart})
   },
   updateCartTotal: () => {
     const { cart } = useStore.getState();
-    const sum = cart.reduce((a, b) => a + b.price, 0);
-    set({ cartTotal: sum })
-  
+
+    set({ cartTotal: calculateCartTotal(cart) });
   },
   incrementProductNumber: (product) => {
     const { cart } = useStore.getState();
-    const number = product.number + 1
-    const newProduct = {...product, number: number}
-    const productIndex = cart.findIndex((p) => p.id === product.id)
-    cart[productIndex] = newProduct
-    let sum = cart.reduce((a, b) => a + (b.price * b.number), 0);
-    sum = sum.toFixed(2)
-    set({ cartTotal: sum, cart: cart })
+    const number = product.number + 1;
+    const newProduct = { ...product, number: number };
+    const productIndex = cart.findIndex((p) => p.id === product.id);
+    cart[productIndex] = newProduct;
+    set({ cartTotal: calculateCartTotal(cart), cart: cart });
   },
   decrementProductNumber: (product) => {
     const { cart } = useStore.getState();
     const number = product.number - 1
-    if (number < 1) return alert("Stop")
-    const newProduct = { ...product, number: number }
-    const productIndex = cart.findIndex((p) => p.id === product.id)
-    cart[productIndex] = newProduct
-    let sum = cart.reduce((a, b) => a + (b.price * b.number), 0);
-    sum = sum.toFixed(2)
-    set({ cartTotal: sum, cart: cart })
+    if (number > 0) {
+      const newProduct = { ...product, number: number }
+      const productIndex = cart.findIndex((p) => p.id === product.id)
+      cart[productIndex] = newProduct
+      let sum = cart.reduce((a, b) => a + (b.price * b.number), 0);
+      set({ cartTotal: sum, cart: cart })
+    }
   }
 });
 
