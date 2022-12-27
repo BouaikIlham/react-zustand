@@ -1,5 +1,10 @@
 import create from "zustand";
-// import { persist, devtools } from "zustand/middleware";
+import { persist, devtools } from "zustand/middleware";
+
+const calculateCartTotal = (cart) => {
+  let sum = cart.reduce((a, b) => a + b.price * b.number, 0);
+  return sum.toFixed(2);
+};
 
 let store = (set) => ({
   products: [],
@@ -25,44 +30,40 @@ let store = (set) => ({
     set((state) => ({ cart: [...state.cart, { ...product, number: 1 }] }));
   },
   clearCart: () => {
-    set({ cart: []})
+    set({ cart: [] });
   },
   removeProduct: (product) => {
     const { cart } = useStore.getState();
-    const newCart = cart.filter((p) => p.id !== product.id)
-    set({cart: newCart})
+    const newCart = cart.filter((p) => p.id !== product.id);
+    set({ cartTotal: calculateCartTotal(newCart), cart: newCart });
   },
   updateCartTotal: () => {
     const { cart } = useStore.getState();
-    const sum = cart.reduce((a, b) => a + b.price, 0);
-    set({ cartTotal: sum })
-  
+
+    set({ cartTotal: calculateCartTotal(cart) });
   },
   incrementProductNumber: (product) => {
     const { cart } = useStore.getState();
-    const number = product.number + 1
-    const newProduct = {...product, number: number}
-    const productIndex = cart.findIndex((p) => p.id === product.id)
-    cart[productIndex] = newProduct
-    let sum = cart.reduce((a, b) => a + (b.price * b.number), 0);
-    sum = sum.toFixed(2)
-    set({ cartTotal: sum, cart: cart })
+    const number = product.number + 1;
+    const newProduct = { ...product, number: number };
+    const productIndex = cart.findIndex((p) => p.id === product.id);
+    cart[productIndex] = newProduct;
+    set({ cartTotal: calculateCartTotal(cart), cart: cart });
   },
   decrementProductNumber: (product) => {
     const { cart } = useStore.getState();
-    const number = product.number - 1
+    const number = product.number - 1;
     if (number > 0) {
-      const newProduct = { ...product, number: number }
-      const productIndex = cart.findIndex((p) => p.id === product.id)
-      cart[productIndex] = newProduct
-      let sum = cart.reduce((a, b) => a + (b.price * b.number), 0);
-      set({ cartTotal: sum, cart: cart })
+      const newProduct = { ...product, number: number };
+      const productIndex = cart.findIndex((p) => p.id === product.id);
+      cart[productIndex] = newProduct;
+      set({ cartTotal: calculateCartTotal(cart), cart: cart });
     }
-  }
+  },
 });
 
-// store = persist(store); // for persisting the state
-// store = devtools(store); // using reduct extention in chrome
+store = persist(store); // for persisting the state
+store = devtools(store); // using reduct extention in chrome
 
 const useStore = create(store);
 

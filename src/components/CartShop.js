@@ -14,7 +14,7 @@ const CartShop = () => {
   const store = useStore();
   const [modalOpen, setModelOpen] = useState(false);
   return (
-    <div className="fixed right-5 top-5 w-96 z-10">
+    <div className="fixed right-5 top-20 w-96 z-10">
       <CartIcon setModelOpen={setModelOpen} modalOpen={modalOpen} />
       <div
         className={`border border-2 p-2 bg-white ${modalOpen ? "" : "hidden"}`}
@@ -36,7 +36,10 @@ const CartShop = () => {
               <div>
                 <img src={product.image} className="w-10 h-10" alt="product" />
               </div>
-              <RemoveIcon removeProduct={store.removeProduct} product={product} />
+              <RemoveIcon
+                removeProduct={store.removeProduct}
+                product={product}
+              />
             </div>
           );
         })}
@@ -50,12 +53,12 @@ const CartShop = () => {
             </button>
 
             <Link to="/Checkout">
-            <button
+              <button
                 onClick={store.addProductsToCheckout}
-              className="text-white bg-pink-700 hover:bg-pink-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 mr-2 mb-2 "
-            >
-              Checkout
-            </button>
+                className="text-white bg-pink-700 hover:bg-pink-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 mr-2 mb-2 "
+              >
+                Checkout
+              </button>
             </Link>
           </div>
         )}

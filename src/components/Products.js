@@ -2,7 +2,6 @@ import React from "react";
 import useStore from "../store/store";
 import CartShop from "./CartShop";
 
-
 const Products = ({ products }) => {
   const store = useStore();
   return (
