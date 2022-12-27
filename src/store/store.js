@@ -1,5 +1,5 @@
 import create from "zustand";
-// import { persist, devtools } from "zustand/middleware";
+import { persist, devtools } from "zustand/middleware";
 
 let store = (set) => ({
   products: [],
@@ -30,7 +30,9 @@ let store = (set) => ({
   removeProduct: (product) => {
     const { cart } = useStore.getState();
     const newCart = cart.filter((p) => p.id !== product.id)
-    set({cart: newCart})
+    let sum = newCart.reduce((a, b) => a + (b.price * b.number), 0);
+    sum = sum.toFixed(2)
+    set({cart: newCart, cartTotal: sum})
   },
   updateCartTotal: () => {
     const { cart } = useStore.getState();
@@ -51,18 +53,18 @@ let store = (set) => ({
   decrementProductNumber: (product) => {
     const { cart } = useStore.getState();
     const number = product.number - 1
-    if (number > 0) {
-      const newProduct = { ...product, number: number }
-      const productIndex = cart.findIndex((p) => p.id === product.id)
-      cart[productIndex] = newProduct
-      let sum = cart.reduce((a, b) => a + (b.price * b.number), 0);
-      set({ cartTotal: sum, cart: cart })
-    }
+    if (number < 1) return alert("Stop")
+    const newProduct = { ...product, number: number }
+    const productIndex = cart.findIndex((p) => p.id === product.id)
+    cart[productIndex] = newProduct
+    let sum = cart.reduce((a, b) => a + (b.price * b.number), 0);
+    sum = sum.toFixed(2)
+    set({ cartTotal: sum, cart: cart })
   }
 });
 
 // store = persist(store); // for persisting the state
-// store = devtools(store); // using reduct extention in chrome
+store = devtools(store); // using reduct extention in chrome
 
 const useStore = create(store);
 
